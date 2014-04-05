@@ -4,10 +4,11 @@ import json
 import shlex
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-d', '--data')
-parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('command')
 parser.add_argument('url')
+parser.add_argument('-d', '--data')
+parser.add_argument('-H', '--header', action='append', default=[])
+parser.add_argument('--compressed', action='store_true')
 
 
 def parse(curl_command):
