@@ -1,5 +1,6 @@
 import argparse
 from collections import OrderedDict
+import Cookie
 import json
 import shlex
 
@@ -34,13 +35,15 @@ def parse(curl_command):
 
         data_token = 'data={}'.format(post_data)
 
-    cookies = OrderedDict()
+    cookie_dict = OrderedDict()
     quoted_headers = OrderedDict()
     for curl_header in parsed_args.header:
         header_key, header_value = curl_header.split(":", 1)
 
         if header_key == 'Cookie':
-            cookies = OrderedDict([x.strip().split("=") for x in header_value.split(";")])
+            cookie = Cookie.SimpleCookie(header_value)
+            for key in cookie:
+                cookie_dict[key] = cookie[key].value
         else:
             quoted_headers[header_key] = header_value.strip()
 
@@ -49,7 +52,7 @@ def parse(curl_command):
         url=parsed_args.url,
         data_token=data_token,
         headers_token="headers={}".format(dict_to_pretty_string(quoted_headers)),
-        cookies_token="cookies={}".format(dict_to_pretty_string(cookies)),
+        cookies_token="cookies={}".format(dict_to_pretty_string(cookie_dict)),
     )
     return result
 
