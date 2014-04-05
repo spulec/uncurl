@@ -31,12 +31,12 @@ import uncurl
 print uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'")
 ```
 
-results in
+prints the string
 
 ```bash
-requests.get("https://pypi.python.org/pypi/uncurl", headers={
+'requests.get("https://pypi.python.org/pypi/uncurl", headers={
     "Accept-Encoding": "gzip,deflate,sdch",
-})
+})'
 ```
 
 ## Install
