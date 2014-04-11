@@ -6,5 +6,8 @@ from .api import parse
 
 
 def main():
-    result = parse(sys.argv[1])
+    if sys.stdin.isatty():
+        result = parse(sys.argv[1])
+    else:
+        result = parse(sys.stdin.read())
     print(result)
