@@ -40,7 +40,7 @@ def parse(curl_command):
     for curl_header in parsed_args.header:
         header_key, header_value = curl_header.split(":", 1)
 
-        if header_key == 'Cookie':
+        if header_key.lower() == 'cookie':
             cookie = Cookie.SimpleCookie(header_value)
             for key in cookie:
                 cookie_dict[key] = cookie[key].value
