@@ -18,6 +18,7 @@ def parse(curl_command):
     tokens = shlex.split(curl_command)
     parsed_args = parser.parse_args(tokens)
 
+    base_indent = " " * 4
     data_token = ''
     post_data = parsed_args.data
     if post_data:
@@ -33,7 +34,7 @@ def parse(curl_command):
         else:
             post_data = "'{}',\n".format(post_data)
 
-        data_token = 'data={}'.format(post_data)
+        data_token = '{}data={}'.format(base_indent, post_data)
 
     cookie_dict = OrderedDict()
     quoted_headers = OrderedDict()
@@ -51,13 +52,13 @@ def parse(curl_command):
         method=method,
         url=parsed_args.url,
         data_token=data_token,
-        headers_token="headers={}".format(dict_to_pretty_string(quoted_headers)),
-        cookies_token="cookies={}".format(dict_to_pretty_string(cookie_dict)),
+        headers_token="{}headers={}".format(base_indent, dict_to_pretty_string(quoted_headers)),
+        cookies_token="{}cookies={}".format(base_indent, dict_to_pretty_string(cookie_dict)),
     )
     return result
 
 
-def dict_to_pretty_string(the_dict, indent=0):
+def dict_to_pretty_string(the_dict, indent=4):
     if not the_dict:
         return "{},\n"
 
