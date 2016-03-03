@@ -4,7 +4,7 @@
 
 # In a nutshell
 
-Uncurl is a library that allows you to convert curl requests into python code that uses [Requests](github.com/kennethreitz/requests).
+Uncurl is a library that allows you to convert curl requests into python code that uses [Requests](github.com/kennethreitz/requests). Since the Chrome network inspector has a nifty "Copy as cURL", this tool is useful for recreating browser requests in python.
 
 
 ## Example
@@ -37,6 +37,12 @@ prints the string
 'requests.get("https://pypi.python.org/pypi/uncurl", headers={
     "Accept-Encoding": "gzip,deflate,sdch",
 })'
+```
+
+You can also pipe input to uncurl:
+
+```bash
+pbpaste | uncurl
 ```
 
 ## Install
