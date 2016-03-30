@@ -23,7 +23,7 @@ requests.get("https://pypi.python.org/pypi/uncurl", headers={
 })
 ```
 
-The unerlying API:
+The underlying API:
 
 ```python
 import uncurl
