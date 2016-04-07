@@ -95,3 +95,12 @@ def test_post_with_string_data():
     cookies={},
 )"""
     )
+
+def test_parse_curl_with_binary_data():
+    uncurl.parse("""curl 'https://pypi.python.org/pypi/uncurl' --data-binary 'this is just some data'""").should.equal(
+        """requests.post("https://pypi.python.org/pypi/uncurl",
+    data='this is just some data',
+    headers={},
+    cookies={},
+)"""
+    )
