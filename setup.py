@@ -13,5 +13,6 @@ setup(
             'uncurl = uncurl.bin:main',
         ],
     },
+    install_requires=['xerox'],
     packages=find_packages(exclude=("tests", "tests.*")),
 )
