@@ -1,7 +1,7 @@
 import argparse
 from collections import OrderedDict
-import Cookie
 import json
+from six.moves import http_cookies as Cookie
 import shlex
 
 parser = argparse.ArgumentParser()
