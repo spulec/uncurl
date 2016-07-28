@@ -13,7 +13,7 @@ def test_main(printer, fake_sys):
         """requests.get("https://pypi.python.org/pypi/uncurl",
     headers={
         "Accept-Encoding": "gzip,deflate,sdch",
-        "Accept-Language": "en-US,en;q=0.8",
+        "Accept-Language": "en-US,en;q=0.8"
     },
     cookies={},
 )""")

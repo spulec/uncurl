@@ -33,9 +33,9 @@ def parse(curl_command):
         if post_data_json and isinstance(post_data_json, dict):
             post_data = dict_to_pretty_string(post_data_json)
         else:
-            post_data = "'{}',\n".format(post_data)
+            post_data = "'{}'".format(post_data)
 
-        data_token = '{}data={}'.format(base_indent, post_data)
+        data_token = '{}data={},\n'.format(base_indent, post_data)
 
     cookie_dict = OrderedDict()
     quoted_headers = OrderedDict()
@@ -49,7 +49,10 @@ def parse(curl_command):
         else:
             quoted_headers[header_key] = header_value.strip()
 
-    result = """requests.{method}("{url}",\n{data_token}{headers_token}{cookies_token})""".format(
+    result = """requests.{method}("{url}",
+{data_token}{headers_token},
+{cookies_token},
+)""".format(
         method=method,
         url=parsed_args.url,
         data_token=data_token,
@@ -61,21 +64,6 @@ def parse(curl_command):
 
 def dict_to_pretty_string(the_dict, indent=4):
     if not the_dict:
-        return "{},\n"
+        return "{}"
 
-    base_indent = " " * indent
-    inner_indent = base_indent + " " * 4
-
-    return_value = "{\n"
-    sorted_keys = sorted(the_dict.keys())
-    for key in sorted_keys:
-        value = the_dict[key]
-        if isinstance(value, dict):
-            value = dict_to_pretty_string(value, indent=indent + 4)
-        else:
-            value = '"{}",\n'.format(value)
-        return_value += inner_indent + '"{0}": {1}'.format(key, value)
-
-    return_value += base_indent + '},\n'
-
-    return return_value
+    return ("\n" + " " * indent).join(json.dumps(the_dict, sort_keys=True, indent=indent, separators=(',', ': ')).splitlines())
