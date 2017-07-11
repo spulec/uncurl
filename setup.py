@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='uncurl',
-    version='0.0.8',
+    version='0.0.8.1',
     description='A library to convert curl requests to python-requests.',
     author='Steve Pulec',
     author_email='spulec@gmail',
