@@ -11,6 +11,7 @@ parser.add_argument('-d', '--data')
 parser.add_argument('-b', '--data-binary', default=None)
 parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('--compressed', action='store_true')
+parser.add_argument('--insecure', action='store_true')
 
 
 def parse(curl_command):
@@ -51,13 +52,14 @@ def parse(curl_command):
 
     result = """requests.{method}("{url}",
 {data_token}{headers_token},
-{cookies_token},
+{cookies_token},{security_token}
 )""".format(
         method=method,
         url=parsed_args.url,
         data_token=data_token,
         headers_token="{}headers={}".format(base_indent, dict_to_pretty_string(quoted_headers)),
         cookies_token="{}cookies={}".format(base_indent, dict_to_pretty_string(cookie_dict)),
+        security_token="\n%sverify=False" % base_indent if parsed_args.insecure else ""
     )
     return result
 
