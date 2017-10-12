@@ -9,6 +9,7 @@ parser.add_argument('command')
 parser.add_argument('url')
 parser.add_argument('-d', '--data')
 parser.add_argument('-b', '--data-binary', default=None)
+parser.add_argument('-X', default='')
 parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('--compressed', action='store_true')
 
@@ -21,6 +22,8 @@ def parse(curl_command):
 
     base_indent = " " * 4
     data_token = ''
+    if parsed_args.X.lower() == 'post':
+        method = 'post'
     post_data = parsed_args.data or parsed_args.data_binary
     if post_data:
         method = 'post'
