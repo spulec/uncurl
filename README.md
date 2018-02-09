@@ -6,6 +6,8 @@
 
 Uncurl is a library that allows you to convert curl requests into python code that uses [Requests](github.com/kennethreitz/requests). Since the Chrome network inspector has a nifty "Copy as cURL", this tool is useful for recreating browser requests in python.
 
+When you don't pass any arguments to uncurl, it will use whatever is in your clipboard as the curl command.
+
 
 ## Example
 
