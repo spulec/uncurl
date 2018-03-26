@@ -1,5 +1,3 @@
-import sure
-
 import uncurl
 
 
@@ -7,6 +5,17 @@ def test_basic_get():
     uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl'").should.equal(
         """requests.get("https://pypi.python.org/pypi/uncurl",
     headers={},
+    cookies={},
+)"""
+    )
+
+
+def test_colon_header():
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H ':authority:mobile.twitter.com'").should.equal(
+        """requests.get("https://pypi.python.org/pypi/uncurl",
+    headers={
+        ":authority": "mobile.twitter.com"
+    },
     cookies={},
 )"""
     )
