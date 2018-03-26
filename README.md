@@ -30,7 +30,7 @@ The underlying API:
 ```python
 import uncurl
 
-print uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'")
+print(uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'"))
 ```
 
 prints the string
@@ -41,7 +41,7 @@ prints the string
 })'
 ```
 
-You can also pipe input to uncurl:
+On Mac OS, you can also pipe input to uncurl:
 
 ```bash
 pbpaste | uncurl
