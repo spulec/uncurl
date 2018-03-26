@@ -1,8 +1,10 @@
 import argparse
-from collections import OrderedDict
 import json
-from six.moves import http_cookies as Cookie
+import re
 import shlex
+from collections import OrderedDict
+
+from six.moves import http_cookies as Cookie
 
 parser = argparse.ArgumentParser()
 parser.add_argument('command')
@@ -43,8 +45,13 @@ def parse(curl_command):
 
     cookie_dict = OrderedDict()
     quoted_headers = OrderedDict()
+
     for curl_header in parsed_args.header:
-        header_key, header_value = curl_header.split(":", 1)
+        if curl_header.startswith(':'):
+            occurrence = [m.start() for m in re.finditer(':', curl_header)]
+            header_key, header_value = curl_header[:occurrence[1]], curl_header[occurrence[1] + 1:]
+        else:
+            header_key, header_value = curl_header.split(":", 1)
 
         if header_key.lower() == 'cookie':
             cookie = Cookie.SimpleCookie(header_value)
@@ -71,4 +78,5 @@ def dict_to_pretty_string(the_dict, indent=4):
     if not the_dict:
         return "{}"
 
-    return ("\n" + " " * indent).join(json.dumps(the_dict, sort_keys=True, indent=indent, separators=(',', ': ')).splitlines())
+    return ("\n" + " " * indent).join(
+        json.dumps(the_dict, sort_keys=True, indent=indent, separators=(',', ': ')).splitlines())
