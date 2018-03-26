@@ -12,6 +12,17 @@ def test_basic_get():
     )
 
 
+def test_colon_header():
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H ':authority:mobile.twitter.com'").should.equal(
+        """requests.get("https://pypi.python.org/pypi/uncurl",
+    headers={
+        ":authority": "mobile.twitter.com"
+    },
+    cookies={},
+)"""
+    )
+
+
 def test_basic_headers():
     uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Accept-Language: en-US,en;q=0.8'").should.equal(
         """requests.get("https://pypi.python.org/pypi/uncurl",
