@@ -37,7 +37,7 @@ def parse(curl_command):
 
         # If we found JSON and it is a dict, pull it apart. Otherwise, just leave as a string
         if post_data_json and isinstance(post_data_json, dict):
-            post_data = dict_to_pretty_string(post_data_json)
+            post_data = '"""\n{}{}\n"""'.format(base_indent, dict_to_pretty_string(post_data_json))
         else:
             post_data = "'{}'".format(post_data)
 
