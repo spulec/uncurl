@@ -81,12 +81,7 @@ def test_post():
 def test_post_with_dict_data():
     uncurl.parse("""curl 'https://pypi.python.org/pypi/uncurl' --data '{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'""").should.equal(
         """requests.post("https://pypi.python.org/pypi/uncurl",
-    data={
-        "evt": "newsletter.show",
-        "properties": {
-            "newsletter_type": "userprofile"
-        }
-    },
+    data='{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}',
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
     },
@@ -116,3 +111,44 @@ def test_parse_curl_with_binary_data():
     cookies={},
 )"""
     )
+
+
+def test_parse_curl_with_another_binary_data():
+    uncurl.parse("""curl -H 'PID: 20000079' -H 'MT: 4' -H 'DivideVersion: 1.0' -H 'SupPhone: Redmi Note 3' -H 'SupFirm: 5.0.2' -H 'IMEI: wx_app' -H 'IMSI: wx_app' -H 'SessionId: ' -H 'CUID: wx_app' -H 'ProtocolVersion: 1.0' -H 'Sign: 7876480679c3cfe9ec0f82da290f0e0e' -H 'Accept: /' -H 'BodyEncryptType: 0' -H 'User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; OPPO R9s Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36 hap/1.0/oppo com.nearme.instant.platform/2.1.0beta1 com.felink.quickapp.reader/1.0.3 ({"packageName":"com.oppo.market","type":"other","extra":{}})' -H 'Content-Type: text/plain; charset=utf-8' -H 'Host: pandahomeios.ifjing.com' --data-binary '{"CateID":"508","PageIndex":1,"PageSize":30}' --compressed 'http://pandahomeios.ifjing.com/action.ashx/otheraction/9028'""").should.equals(
+        r"""requests.post("http://pandahomeios.ifjing.com/action.ashx/otheraction/9028",
+    data='{"CateID":"508","PageIndex":1,"PageSize":30}',
+    headers={
+        "Accept": "/",
+        "BodyEncryptType": "0",
+        "CUID": "wx_app",
+        "Content-Type": "text/plain; charset=utf-8",
+        "DivideVersion": "1.0",
+        "Host": "pandahomeios.ifjing.com",
+        "IMEI": "wx_app",
+        "IMSI": "wx_app",
+        "MT": "4",
+        "PID": "20000079",
+        "ProtocolVersion": "1.0",
+        "SessionId": "",
+        "Sign": "7876480679c3cfe9ec0f82da290f0e0e",
+        "SupFirm": "5.0.2",
+        "SupPhone": "Redmi Note 3",
+        "User-Agent": "Mozilla/5.0 (Linux; Android 6.0.1; OPPO R9s Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36 hap/1.0/oppo com.nearme.instant.platform/2.1.0beta1 com.felink.quickapp.reader/1.0.3 ({\"packageName\":\"com.oppo.market\",\"type\":\"other\",\"extra\":{}})"
+    },
+    cookies={},
+)""")
+
+
+if __name__ == '__main__':
+    test_basic_get()
+    test_colon_header()
+    test_basic_headers()
+    test_cookies()
+    test_cookies_lowercase()
+    test_post()
+    test_post_with_dict_data()
+    test_post_with_string_data()
+    test_parse_curl_with_binary_data()
+    test_parse_curl_with_another_binary_data()
+
+
