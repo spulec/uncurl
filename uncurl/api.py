@@ -30,17 +30,8 @@ def parse(curl_command):
     post_data = parsed_args.data or parsed_args.data_binary
     if post_data:
         method = 'post'
-        try:
-            post_data_json = json.loads(post_data)
-        except ValueError:
-            post_data_json = None
 
-        # If we found JSON and it is a dict, pull it apart. Otherwise, just leave as a string
-        if post_data_json and isinstance(post_data_json, dict):
-            post_data = dict_to_pretty_string(post_data_json)
-        else:
-            post_data = "'{}'".format(post_data)
-
+        post_data = "'{}'".format(post_data)
         data_token = '{}data={},\n'.format(base_indent, post_data)
 
     cookie_dict = OrderedDict()
