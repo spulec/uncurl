@@ -41,6 +41,16 @@ prints the string
 })'
 ```
 
+You can also retrieve the components as python objects:
+
+```python
+>>> import uncurl
+>>> context = uncurl.parse_context("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'")
+>>> context.url
+https://pypi.python.org/pypi/uncurl
+>>> context.headers
+OrderedDict([('Accept-Encoding', 'gzip,deflate,sdch')])
+```
 On Mac OS, you can also pipe input to uncurl:
 
 ```bash
