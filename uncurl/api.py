@@ -2,7 +2,7 @@ import argparse
 import json
 import re
 import shlex
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 from six.moves import http_cookies as Cookie
 
@@ -16,23 +16,22 @@ parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('--compressed', action='store_true')
 parser.add_argument('--insecure', action='store_true')
 
+BASE_INDENT = " " * 4
 
-def parse(curl_command):
+ParsedContext = namedtuple('ParsedContext', ['method', 'url', 'data', 'headers', 'cookies', 'verify'])
+
+def parse_context(curl_command):
     method = "get"
 
     tokens = shlex.split(curl_command)
     parsed_args = parser.parse_args(tokens)
 
-    base_indent = " " * 4
-    data_token = ''
-    if parsed_args.X.lower() == 'post':
-        method = 'post'
     post_data = parsed_args.data or parsed_args.data_binary
     if post_data:
         method = 'post'
 
-        post_data = "'{}'".format(post_data)
-        data_token = '{}data={},\n'.format(base_indent, post_data)
+    if parsed_args.X:
+        method = parsed_args.X.lower()
 
     cookie_dict = OrderedDict()
     quoted_headers = OrderedDict()
@@ -51,19 +50,40 @@ def parse(curl_command):
         else:
             quoted_headers[header_key] = header_value.strip()
 
-    result = """requests.{method}("{url}",
-{data_token}{headers_token},
-{cookies_token},{security_token}
-)""".format(
+    return ParsedContext(
         method=method,
         url=parsed_args.url,
-        data_token=data_token,
-        headers_token="{}headers={}".format(base_indent, dict_to_pretty_string(quoted_headers)),
-        cookies_token="{}cookies={}".format(base_indent, dict_to_pretty_string(cookie_dict)),
-        security_token="\n%sverify=False" % base_indent if parsed_args.insecure else ""
+        data=post_data,
+        headers=quoted_headers,
+        cookies=cookie_dict,
+        verify=parsed_args.insecure
     )
-    return result
 
+
+def parse(curl_command):
+    parsed_context = parse_context(curl_command)
+
+    data_token = ''
+    if parsed_context.data:
+        data_token = '{}data=\'{}\',\n'.format(BASE_INDENT, parsed_context.data)
+
+    verify_token = ''
+    if parsed_context.verify:
+        verify_token = '\n{}verify=False'
+
+    formatter = {
+        'method': parsed_context.method,
+        'url': parsed_context.url,
+        'data_token': data_token,
+        'headers_token': "{}headers={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.headers)),
+        'cookies_token': "{}cookies={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)),
+        'security_token': verify_token
+    }
+
+    return """requests.{method}("{url}",
+{data_token}{headers_token},
+{cookies_token},{security_token}
+)""".format(**formatter)
 
 def dict_to_pretty_string(the_dict, indent=4):
     if not the_dict:
