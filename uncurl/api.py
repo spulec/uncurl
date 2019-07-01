@@ -69,7 +69,7 @@ def parse(curl_command):
 
     verify_token = ''
     if parsed_context.verify:
-        verify_token = '\n{}verify=False'
+        verify_token = '\n{}verify=False'.format(BASE_INDENT)
 
     formatter = {
         'method': parsed_context.method,

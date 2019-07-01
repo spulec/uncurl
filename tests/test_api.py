@@ -139,6 +139,16 @@ def test_parse_curl_with_another_binary_data():
 )""")
 
 
+def test_parse_curl_with_insecure_flag():
+    uncurl.parse("""curl 'https://pypi.python.org/pypi/uncurl' --insecure""").should.equal(
+        """requests.get("https://pypi.python.org/pypi/uncurl",
+    headers={},
+    cookies={},
+    verify=False
+)"""
+    )
+
+
 if __name__ == '__main__':
     test_basic_get()
     test_colon_header()
@@ -150,5 +160,6 @@ if __name__ == '__main__':
     test_post_with_string_data()
     test_parse_curl_with_binary_data()
     test_parse_curl_with_another_binary_data()
+    test_parse_curl_with_insecure_flag()
 
 
