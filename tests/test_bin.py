@@ -10,7 +10,8 @@ def test_main(printer, fake_sys):
     main()
 
     printer.assert_called_once_with(
-        """requests.get("https://pypi.python.org/pypi/uncurl",
+        """
+requests.get("https://pypi.python.org/pypi/uncurl",
     headers={
         "Accept-Encoding": "gzip,deflate,sdch",
         "Accept-Language": "en-US,en;q=0.8"
