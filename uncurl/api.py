@@ -80,7 +80,7 @@ def parse(curl_command):
         'security_token': verify_token
     }
 
-    return """\nrequests.{method}("{url}",
+    return """requests.{method}("{url}",
 {data_token}{headers_token},
 {cookies_token},{security_token}
 )""".format(**formatter)

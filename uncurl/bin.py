@@ -16,4 +16,4 @@ def main():
             result = parse(xerox.paste())
     else:
         result = parse(sys.stdin.read())
-    print(result)
+    print("\n" + result)
