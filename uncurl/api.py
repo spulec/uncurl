@@ -82,7 +82,7 @@ def parse(curl_command, **kargs):
         'headers_token': "{}headers={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.headers)),
         'cookies_token': "{}cookies={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)),
         'security_token': verify_token,
-        'requests_kagrs': requests_kargs
+        'requests_kargs': requests_kargs
     }
 
     return """requests.{method}("{url}",
