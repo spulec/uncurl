@@ -157,7 +157,7 @@ def test_parse_curl_with_request_kargs():
         "Accept-Encoding": "gzip,deflate,sdch"
     },
     cookies={},
-)"""
+)""")
                       
     uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
     timeout=0.1,
@@ -165,7 +165,7 @@ def test_parse_curl_with_request_kargs():
         "Accept-Encoding": "gzip,deflate,sdch"
     },
     cookies={},
-)"""
+)""")
                       
 
 
