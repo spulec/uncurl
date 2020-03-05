@@ -71,9 +71,9 @@ def parse(curl_command, **kargs):
     if parsed_context.verify:
         verify_token = '\n{}verify=False'.format(BASE_INDENT)
 
-    requests_kagrs=''
+    requests_kargs=''
     for k,v in kargs.items():
-        requests_kagrs += "{}{}={},\n".format(BASE_INDENT,k,str(v))
+        requests_kargs += "{}{}={},\n".format(BASE_INDENT,k,str(v))
         
     formatter = {
         'method': parsed_context.method,
@@ -81,11 +81,12 @@ def parse(curl_command, **kargs):
         'data_token': data_token,
         'headers_token': "{}headers={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.headers)),
         'cookies_token': "{}cookies={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)),
-        'security_token': verify_token
+        'security_token': verify_token,
+        'requests_kagrs': requests_kargs
     }
 
     return """requests.{method}("{url}",
-{requests_kagrs}{data_token}{headers_token},
+{requests_kargs}{data_token}{headers_token},
 {cookies_token},{security_token}
 )""".format(**formatter)
 
