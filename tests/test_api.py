@@ -150,7 +150,7 @@ def test_parse_curl_with_insecure_flag():
 
 def test_parse_curl_with_request_kargs():
     
-    parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1, allow_redirects=True).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1, allow_redirects=True).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
     timeout=0.1,
     allow_redirects=True,
     headers={
@@ -159,7 +159,7 @@ def test_parse_curl_with_request_kargs():
     cookies={},
 )"""
                       
-    parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
     timeout=0.1,
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
