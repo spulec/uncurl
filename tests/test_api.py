@@ -183,5 +183,5 @@ if __name__ == '__main__':
     test_parse_curl_with_binary_data()
     test_parse_curl_with_another_binary_data()
     test_parse_curl_with_insecure_flag()
-
+    test_parse_curl_with_request_kargs()
 
