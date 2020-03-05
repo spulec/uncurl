@@ -60,7 +60,7 @@ def parse_context(curl_command):
     )
 
 
-def parse(curl_command):
+def parse(curl_command, **kargs):
     parsed_context = parse_context(curl_command)
 
     data_token = ''
@@ -71,17 +71,22 @@ def parse(curl_command):
     if parsed_context.verify:
         verify_token = '\n{}verify=False'.format(BASE_INDENT)
 
+    requests_kargs=''
+    for k,v in kargs.items():
+        requests_kargs += "{}{}={},\n".format(BASE_INDENT,k,str(v))
+        
     formatter = {
         'method': parsed_context.method,
         'url': parsed_context.url,
         'data_token': data_token,
         'headers_token': "{}headers={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.headers)),
         'cookies_token': "{}cookies={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)),
-        'security_token': verify_token
+        'security_token': verify_token,
+        'requests_kargs': requests_kargs
     }
 
     return """requests.{method}("{url}",
-{data_token}{headers_token},
+{requests_kargs}{data_token}{headers_token},
 {cookies_token},{security_token}
 )""".format(**formatter)
 

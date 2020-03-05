@@ -148,6 +148,26 @@ def test_parse_curl_with_insecure_flag():
 )"""
     )
 
+def test_parse_curl_with_request_kargs():
+    
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1, allow_redirects=True).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
+    allow_redirects=True,
+    timeout=0.1,
+    headers={
+        "Accept-Encoding": "gzip,deflate,sdch"
+    },
+    cookies={},
+)""")
+                      
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
+    timeout=0.1,
+    headers={
+        "Accept-Encoding": "gzip,deflate,sdch"
+    },
+    cookies={},
+)""")
+                      
+
 
 if __name__ == '__main__':
     test_basic_get()
@@ -161,5 +181,5 @@ if __name__ == '__main__':
     test_parse_curl_with_binary_data()
     test_parse_curl_with_another_binary_data()
     test_parse_curl_with_insecure_flag()
-
+    test_parse_curl_with_request_kargs()
 
