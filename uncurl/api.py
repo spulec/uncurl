@@ -72,7 +72,7 @@ def parse(curl_command, **kargs):
         verify_token = '\n{}verify=False'.format(BASE_INDENT)
 
     requests_kargs=''
-    for k,v in kargs.items():
+    for k,v in sorted(kargs.items()):
         requests_kargs += "{}{}={},\n".format(BASE_INDENT,k,str(v))
         
     formatter = {
