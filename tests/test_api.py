@@ -62,6 +62,17 @@ def test_cookies_lowercase():
 )"""
     )
 
+def test_cookies_dollar_sign():
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch' -H $'Cookie: somereallyreallylongcookie=true'").should.equal(
+        """requests.get("https://pypi.python.org/pypi/uncurl",
+    headers={
+        "Accept-Encoding": "gzip,deflate,sdch"
+    },
+    cookies={
+        "somereallyreallylongcookie": "true"
+    },
+)"""
+    )
 
 def test_post():
     uncurl.parse("""curl 'https://pypi.python.org/pypi/uncurl' --data '[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'""").should.equal(
