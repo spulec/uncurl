@@ -13,6 +13,6 @@ setup(
             'uncurl = uncurl.bin:main',
         ],
     },
-    install_requires=['xerox', 'six'],
+    install_requires=['pyperclip', 'six'],
     packages=find_packages(exclude=("tests", "tests.*")),
 )
