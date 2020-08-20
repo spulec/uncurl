@@ -60,7 +60,7 @@ def parse_context(curl_command):
     )
 
 
-def parse(curl_command, **kargs):
+def parse(curl_command, sort_keys=True, **kargs):
     parsed_context = parse_context(curl_command)
 
     data_token = ''
@@ -74,13 +74,15 @@ def parse(curl_command, **kargs):
     requests_kargs=''
     for k,v in sorted(kargs.items()):
         requests_kargs += "{}{}={},\n".format(BASE_INDENT,k,str(v))
-        
+
     formatter = {
         'method': parsed_context.method,
         'url': parsed_context.url,
         'data_token': data_token,
-        'headers_token': "{}headers={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.headers)),
-        'cookies_token': "{}cookies={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)),
+        'headers_token': "{}headers={}".format(BASE_INDENT,
+            dict_to_pretty_string(parsed_context.headers, sort_keys=sort_keys)),
+        'cookies_token': "{}cookies={}".format(BASE_INDENT,
+            dict_to_pretty_string(parsed_context.cookies, sort_keys=sort_keys)),
         'security_token': verify_token,
         'requests_kargs': requests_kargs
     }
@@ -90,9 +92,9 @@ def parse(curl_command, **kargs):
 {cookies_token},{security_token}
 )""".format(**formatter)
 
-def dict_to_pretty_string(the_dict, indent=4):
+def dict_to_pretty_string(the_dict, indent=4, sort_keys=True):
     if not the_dict:
         return "{}"
 
     return ("\n" + " " * indent).join(
-        json.dumps(the_dict, sort_keys=True, indent=indent, separators=(',', ': ')).splitlines())
+        json.dumps(the_dict, sort_keys=sort_keys, indent=indent, separators=(',', ': ')).splitlines())
