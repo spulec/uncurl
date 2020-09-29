@@ -19,4 +19,5 @@ requests.get("https://pypi.python.org/pypi/uncurl",
         "Accept-Language": "en-US,en;q=0.8"
     },
     cookies={},
+    auth=(),
 )""")

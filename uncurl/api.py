@@ -99,8 +99,8 @@ def parse(curl_command, **kargs):
 
     return """requests.{method}("{url}",
 {requests_kargs}{data_token}{headers_token},
-{cookies_token},{security_token}
-{auth}
+{cookies_token},
+{auth},{security_token}
 )""".format(**formatter)
 
 
