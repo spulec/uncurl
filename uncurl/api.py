@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import json
 import re
@@ -15,10 +16,11 @@ parser.add_argument('-X', default='')
 parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('--compressed', action='store_true')
 parser.add_argument('--insecure', action='store_true')
+parser.add_argument('--user', '-u', default=())
 
 BASE_INDENT = " " * 4
 
-ParsedContext = namedtuple('ParsedContext', ['method', 'url', 'data', 'headers', 'cookies', 'verify'])
+ParsedContext = namedtuple('ParsedContext', ['method', 'url', 'data', 'headers', 'cookies', 'verify', 'auth'])
 
 def parse_context(curl_command):
     method = "get"
@@ -50,13 +52,19 @@ def parse_context(curl_command):
         else:
             quoted_headers[header_key] = header_value.strip()
 
+    # add auth
+    user = parsed_args.user
+    if parsed_args.user:
+        user = tuple(user.split(':'))
+
     return ParsedContext(
         method=method,
         url=parsed_args.url,
         data=post_data,
         headers=quoted_headers,
         cookies=cookie_dict,
-        verify=parsed_args.insecure
+        verify=parsed_args.insecure,
+        auth=user
     )
 
 
@@ -74,7 +82,10 @@ def parse(curl_command, **kargs):
     requests_kargs=''
     for k,v in sorted(kargs.items()):
         requests_kargs += "{}{}={},\n".format(BASE_INDENT,k,str(v))
-        
+
+    #auth_data = f'{BASE_INDENT}auth={parsed_context.auth}'
+    auth_data = "{}auth={}".format(BASE_INDENT,parsed_context.auth)
+
     formatter = {
         'method': parsed_context.method,
         'url': parsed_context.url,
@@ -82,13 +93,16 @@ def parse(curl_command, **kargs):
         'headers_token': "{}headers={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.headers)),
         'cookies_token': "{}cookies={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)),
         'security_token': verify_token,
-        'requests_kargs': requests_kargs
+        'requests_kargs': requests_kargs,
+        'auth': auth_data
     }
 
     return """requests.{method}("{url}",
 {requests_kargs}{data_token}{headers_token},
-{cookies_token},{security_token}
+{cookies_token},
+{auth},{security_token}
 )""".format(**formatter)
+
 
 def dict_to_pretty_string(the_dict, indent=4):
     if not the_dict:
@@ -96,3 +110,4 @@ def dict_to_pretty_string(the_dict, indent=4):
 
     return ("\n" + " " * indent).join(
         json.dumps(the_dict, sort_keys=True, indent=indent, separators=(',', ': ')).splitlines())
+
