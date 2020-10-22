@@ -15,8 +15,10 @@ parser.add_argument('-b', '--data-binary', default=None)
 parser.add_argument('-X', default='')
 parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('--compressed', action='store_true')
-parser.add_argument('--insecure', action='store_true')
+parser.add_argument('-k','--insecure', action='store_true')
 parser.add_argument('--user', '-u', default=())
+parser.add_argument('-i','--include', action='store_true')
+parser.add_argument('-s','--silent', action='store_true')
 
 BASE_INDENT = " " * 4
 
