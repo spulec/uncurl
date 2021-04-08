@@ -24,10 +24,15 @@ BASE_INDENT = " " * 4
 
 ParsedContext = namedtuple('ParsedContext', ['method', 'url', 'data', 'headers', 'cookies', 'verify', 'auth'])
 
+
+def normalize_newlines(multiline_text):
+    return multiline_text.replace(" \\\n", " ")
+
+
 def parse_context(curl_command):
     method = "get"
 
-    tokens = shlex.split(curl_command)
+    tokens = shlex.split(normalize_newlines(curl_command))
     parsed_args = parser.parse_args(tokens)
 
     post_data = parsed_args.data or parsed_args.data_binary

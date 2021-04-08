@@ -201,6 +201,18 @@ def test_parse_curl_with_request_kargs():
     auth=(),
 )""")
                       
+def test_parse_curl_with_escaped_newlines():
+    uncurl.parse("""curl 'https://pypi.python.org/pypi/uncurl' \\\n -H 'Accept-Encoding: gzip,deflate' \\\n --insecure""").should.equal(
+        """requests.get("https://pypi.python.org/pypi/uncurl",
+    headers={
+        "Accept-Encoding": "gzip,deflate"
+    },
+    cookies={},
+    auth=(),
+    verify=False
+)"""
+    )
+
 
 
 if __name__ == '__main__':
