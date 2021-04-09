@@ -212,6 +212,15 @@ def test_parse_curl_with_escaped_newlines():
     verify=False
 )"""
     )
+    
+def test_parse_curl_escaped_unicode_in_cookie():
+    uncurl.parse("""curl 'https://pypi.python.org/pypi/uncurl' -H $'cookie: sid=00Dt00000004XYz\\u0021ARg' """).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
+    headers={},
+    cookies={
+        "sid": "00Dt00000004XYz!ARg"
+    },
+    auth=(),
+)""")
 
 
 
