@@ -19,10 +19,12 @@ parser.add_argument('-k','--insecure', action='store_true')
 parser.add_argument('--user', '-u', default=())
 parser.add_argument('-i','--include', action='store_true')
 parser.add_argument('-s','--silent', action='store_true')
+parser.add_argument('-x', '--proxy', '-vx', default={})
+parser.add_argument('-U', '--proxy-user', default='')
 
 BASE_INDENT = " " * 4
 
-ParsedContext = namedtuple('ParsedContext', ['method', 'url', 'data', 'headers', 'cookies', 'verify', 'auth'])
+ParsedContext = namedtuple('ParsedContext', ['method', 'url', 'data', 'headers', 'cookies', 'verify', 'auth', 'proxy'])
 
 
 def normalize_newlines(multiline_text):
@@ -64,6 +66,21 @@ def parse_context(curl_command):
     if parsed_args.user:
         user = tuple(user.split(':'))
 
+    # add proxy and its authentication if it's available.
+    proxies = parsed_args.proxy
+    # proxy_auth = parsed_args.proxy_user
+    if parsed_args.proxy and parsed_args.proxy_user:
+        print('proxy: {}'.format(parsed_args.proxy))
+        proxies = {
+            "http": "http://{}@{}/".format(parsed_args.proxy_user, parsed_args.proxy),
+            "https": "http://{}@{}/".format(parsed_args.proxy_user, parsed_args.proxy),
+        }
+    elif parsed_args.proxy:
+        proxies = {
+            "http": "http://{}/".format(parsed_args.proxy),
+            "https": "http://{}/".format(parsed_args.proxy),
+        }
+
     return ParsedContext(
         method=method,
         url=parsed_args.url,
@@ -71,7 +88,8 @@ def parse_context(curl_command):
         headers=quoted_headers,
         cookies=cookie_dict,
         verify=parsed_args.insecure,
-        auth=user
+        auth=user,
+        proxy=proxies,
     )
 
 
@@ -92,6 +110,7 @@ def parse(curl_command, **kargs):
 
     #auth_data = f'{BASE_INDENT}auth={parsed_context.auth}'
     auth_data = "{}auth={}".format(BASE_INDENT,parsed_context.auth)
+    proxy_data = "\n{}proxies={}".format(BASE_INDENT, parsed_context.proxy)
 
     formatter = {
         'method': parsed_context.method,
@@ -101,13 +120,14 @@ def parse(curl_command, **kargs):
         'cookies_token': "{}cookies={}".format(BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)),
         'security_token': verify_token,
         'requests_kargs': requests_kargs,
-        'auth': auth_data
+        'auth': auth_data,
+        'proxies': proxy_data
     }
 
     return """requests.{method}("{url}",
 {requests_kargs}{data_token}{headers_token},
 {cookies_token},
-{auth},{security_token}
+{auth},{proxies},{security_token}
 )""".format(**formatter)
 
 
