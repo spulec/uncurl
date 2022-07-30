@@ -19,7 +19,7 @@ parser.add_argument('-k','--insecure', action='store_true')
 parser.add_argument('--user', '-u', default=())
 parser.add_argument('-i','--include', action='store_true')
 parser.add_argument('-s','--silent', action='store_true')
-parser.add_argument('-x', '--proxy', '-vx', default={})
+parser.add_argument('-x', '--proxy', default={})
 parser.add_argument('-U', '--proxy-user', default='')
 
 BASE_INDENT = " " * 4
@@ -70,7 +70,6 @@ def parse_context(curl_command):
     proxies = parsed_args.proxy
     # proxy_auth = parsed_args.proxy_user
     if parsed_args.proxy and parsed_args.proxy_user:
-        print('proxy: {}'.format(parsed_args.proxy))
         proxies = {
             "http": "http://{}@{}/".format(parsed_args.proxy_user, parsed_args.proxy),
             "https": "http://{}@{}/".format(parsed_args.proxy_user, parsed_args.proxy),
