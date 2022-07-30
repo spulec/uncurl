@@ -9,6 +9,7 @@ def test_basic_get():
     headers={},
     cookies={},
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -21,6 +22,7 @@ def test_colon_header():
     },
     cookies={},
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -34,6 +36,7 @@ def test_basic_headers():
     },
     cookies={},
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -49,6 +52,7 @@ def test_cookies():
         "foo": "bar"
     },
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -64,6 +68,7 @@ def test_cookies_lowercase():
         "foo": "bar"
     },
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -77,6 +82,7 @@ def test_cookies_dollar_sign():
         "somereallyreallylongcookie": "true"
     },
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -92,6 +98,7 @@ def test_post():
         "foo": "bar"
     },
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -108,6 +115,7 @@ def test_post_with_dict_data():
         "foo": "bar"
     },
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -119,6 +127,7 @@ def test_post_with_string_data():
     headers={},
     cookies={},
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -130,6 +139,7 @@ def test_parse_curl_with_binary_data():
     headers={},
     cookies={},
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -140,6 +150,7 @@ def test_parse_curl_with_raw_data():
     headers={},
     cookies={},
     auth=(),
+    proxies={},
 )"""
     )
 
@@ -167,6 +178,7 @@ def test_parse_curl_with_another_binary_data():
     },
     cookies={},
     auth=(),
+    proxies={},
 )""")
 
 
@@ -176,6 +188,7 @@ def test_parse_curl_with_insecure_flag():
     headers={},
     cookies={},
     auth=(),
+    proxies={},
     verify=False
 )"""
     )
@@ -190,6 +203,7 @@ def test_parse_curl_with_request_kargs():
     },
     cookies={},
     auth=(),
+    proxies={},
 )""")
                       
     uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'", timeout=0.1).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
@@ -199,6 +213,7 @@ def test_parse_curl_with_request_kargs():
     },
     cookies={},
     auth=(),
+    proxies={},
 )""")
                       
 def test_parse_curl_with_escaped_newlines():
@@ -209,6 +224,7 @@ def test_parse_curl_with_escaped_newlines():
     },
     cookies={},
     auth=(),
+    proxies={},
     verify=False
 )"""
     )
@@ -220,6 +236,15 @@ def test_parse_curl_escaped_unicode_in_cookie():
         "sid": "00Dt00000004XYz!ARg"
     },
     auth=(),
+    proxies={},
+)""")
+
+def test_parse_curl_with_proxy_and_proxy_auth():
+    uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -U user: -x proxy.python.org:8080").should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
+    headers={},
+    cookies={},
+    auth=(),
+    proxies={'http': 'http://user:@proxy.python.org:8080/', 'https': 'http://user:@proxy.python.org:8080/'},
 )""")
 
 
@@ -238,4 +263,4 @@ if __name__ == '__main__':
     test_parse_curl_with_another_binary_data()
     test_parse_curl_with_insecure_flag()
     test_parse_curl_with_request_kargs()
-
+    test_parse_curl_with_proxy_and_proxy_auth()
