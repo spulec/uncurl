@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import argparse
 import json
 import re
 import shlex
@@ -7,7 +6,9 @@ from collections import OrderedDict, namedtuple
 
 from six.moves import http_cookies as Cookie
 
-parser = argparse.ArgumentParser()
+from .argparser import ArgumentParser
+
+parser = ArgumentParser()
 parser.add_argument('command')
 parser.add_argument('url')
 parser.add_argument('-d', '--data')
