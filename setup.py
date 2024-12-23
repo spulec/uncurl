@@ -2,12 +2,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='uncurl',
-    version='0.0.11',
-    description='A library to convert curl requests to python-requests.',
-    author='Steve Pulec',
-    author_email='spulec@gmail.com',
-    url='https://github.com/spulec/uncurl',
+    name='uncurl-pk',
+    version='0.0.2',
+    description='A library to convert curl requests to python-requests. Forked version of spulec/uncurl ',
+    author='Pankaj Kumar',
+    author_email='pnkjpvt@gmail.com',
+    url='https://github.com/pnkjkpvt/uncurl/tree/master',
     entry_points={
         'console_scripts': [
             'uncurl = uncurl.bin:main',

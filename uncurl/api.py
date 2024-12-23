@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
+import argparse
 import json
 import re
 import shlex
 from collections import OrderedDict, namedtuple
 
 from six.moves import http_cookies as Cookie
+from typing_extensions import override
 
-from .argparser import ArgumentParser
 
-parser = ArgumentParser()
+class ModifiedArgumentParser(argparse.ArgumentParser):
+    @override
+    def error(self, message):
+        raise ValueError(message)
+
+
+parser = ModifiedArgumentParser()
 parser.add_argument('command')
 parser.add_argument('url')
 parser.add_argument('-d', '--data')
@@ -16,10 +23,10 @@ parser.add_argument('-b', '--data-binary', '--data-raw', default=None)
 parser.add_argument('-X', default='')
 parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('--compressed', action='store_true')
-parser.add_argument('-k','--insecure', action='store_true')
+parser.add_argument('-k', '--insecure', action='store_true')
 parser.add_argument('--user', '-u', default=())
-parser.add_argument('-i','--include', action='store_true')
-parser.add_argument('-s','--silent', action='store_true')
+parser.add_argument('-i', '--include', action='store_true')
+parser.add_argument('-s', '--silent', action='store_true')
 parser.add_argument('-x', '--proxy', default={})
 parser.add_argument('-U', '--proxy-user', default='')
 
@@ -104,12 +111,12 @@ def parse(curl_command, **kargs):
     if parsed_context.verify:
         verify_token = '\n{}verify=False'.format(BASE_INDENT)
 
-    requests_kargs=''
-    for k,v in sorted(kargs.items()):
-        requests_kargs += "{}{}={},\n".format(BASE_INDENT,k,str(v))
+    requests_kargs = ''
+    for k, v in sorted(kargs.items()):
+        requests_kargs += "{}{}={},\n".format(BASE_INDENT, k, str(v))
 
     #auth_data = f'{BASE_INDENT}auth={parsed_context.auth}'
-    auth_data = "{}auth={}".format(BASE_INDENT,parsed_context.auth)
+    auth_data = "{}auth={}".format(BASE_INDENT, parsed_context.auth)
     proxy_data = "\n{}proxies={}".format(BASE_INDENT, parsed_context.proxy)
 
     formatter = {
@@ -137,4 +144,3 @@ def dict_to_pretty_string(the_dict, indent=4):
 
     return ("\n" + " " * indent).join(
         json.dumps(the_dict, sort_keys=True, indent=indent, separators=(',', ': ')).splitlines())
-
