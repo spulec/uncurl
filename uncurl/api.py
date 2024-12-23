@@ -6,11 +6,10 @@ import shlex
 from collections import OrderedDict, namedtuple
 
 from six.moves import http_cookies as Cookie
-from typing_extensions import override
 
 
 class ModifiedArgumentParser(argparse.ArgumentParser):
-    @override
+    # @override
     def error(self, message):
         raise ValueError(message)
 

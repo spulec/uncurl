@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='uncurl-pk',
-    version='0.0.2',
+    version='0.0.4',
     description='A library to convert curl requests to python-requests. Forked version of spulec/uncurl ',
     author='Pankaj Kumar',
     author_email='pnkjpvt@gmail.com',
