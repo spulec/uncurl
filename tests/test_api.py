@@ -4,8 +4,8 @@ import uncurlx
 
 
 def test_basic_get():
-    uncurlx.parse("curl 'https://pypi.python.org/pypi/uncurl'").should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+    uncurlx.parse("curl 'https://pypi.python.org/pypi/uncurlx'").should.equal(
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={},
     cookies={},
     auth=(),
@@ -16,9 +16,9 @@ def test_basic_get():
 
 def test_colon_header():
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -H 'authority:mobile.twitter.com'"
+        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'authority:mobile.twitter.com'"
     ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={
         "authority": "mobile.twitter.com"
     },
@@ -31,9 +31,9 @@ def test_colon_header():
 
 def test_basic_headers():
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Accept-Language: en-US,en;q=0.8'"
+        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Accept-Language: en-US,en;q=0.8'"
     ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={
         "Accept-Encoding": "gzip,deflate,sdch",
         "Accept-Language": "en-US,en;q=0.8"
@@ -47,9 +47,9 @@ def test_basic_headers():
 
 def test_cookies():
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"
+        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"
     ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
     },
@@ -65,9 +65,9 @@ def test_cookies():
 
 def test_cookies_lowercase():
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'cookie: foo=bar; baz=baz2'"
+        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'cookie: foo=bar; baz=baz2'"
     ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
     },
@@ -83,9 +83,9 @@ def test_cookies_lowercase():
 
 def test_cookies_dollar_sign():
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch' -H $'Cookie: somereallyreallylongcookie=true'"
+        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H $'Cookie: somereallyreallylongcookie=true'"
     ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
     },
@@ -100,9 +100,9 @@ def test_cookies_dollar_sign():
 
 def test_post():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' --data '[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
+        """curl 'https://pypi.python.org/pypi/uncurlx' --data '[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
     ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurl",
+        """httpx.post("https://pypi.python.org/pypi/uncurlx",
     data='[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]',
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
@@ -119,9 +119,9 @@ def test_post():
 
 def test_post_with_dict_data():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' --data '{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
+        """curl 'https://pypi.python.org/pypi/uncurlx' --data '{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
     ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurl",
+        """httpx.post("https://pypi.python.org/pypi/uncurlx",
     data='{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}',
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
@@ -138,9 +138,9 @@ def test_post_with_dict_data():
 
 def test_post_with_string_data():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' --data 'this is just some data'"""
+        """curl 'https://pypi.python.org/pypi/uncurlx' --data 'this is just some data'"""
     ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurl",
+        """httpx.post("https://pypi.python.org/pypi/uncurlx",
     data='this is just some data',
     headers={},
     cookies={},
@@ -152,9 +152,9 @@ def test_post_with_string_data():
 
 def test_parse_curl_with_binary_data():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' --data-binary 'this is just some data'"""
+        """curl 'https://pypi.python.org/pypi/uncurlx' --data-binary 'this is just some data'"""
     ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurl",
+        """httpx.post("https://pypi.python.org/pypi/uncurlx",
     data='this is just some data',
     headers={},
     cookies={},
@@ -166,9 +166,9 @@ def test_parse_curl_with_binary_data():
 
 def test_parse_curl_with_raw_data():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' --data-raw 'this is just some data'"""
+        """curl 'https://pypi.python.org/pypi/uncurlx' --data-raw 'this is just some data'"""
     ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurl",
+        """httpx.post("https://pypi.python.org/pypi/uncurlx",
     data='this is just some data',
     headers={},
     cookies={},
@@ -211,9 +211,9 @@ def test_parse_curl_with_another_binary_data():
 
 def test_parse_curl_with_insecure_flag():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' --insecure"""
+        """curl 'https://pypi.python.org/pypi/uncurlx' --insecure"""
     ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={},
     cookies={},
     auth=(),
@@ -225,10 +225,10 @@ def test_parse_curl_with_insecure_flag():
 
 def test_parse_curl_with_request_kargs():
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'",
+        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch'",
         timeout=0.1,
         allow_redirects=True,
-    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurl",
+    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
     allow_redirects=True,
     timeout=0.1,
     headers={
@@ -240,9 +240,9 @@ def test_parse_curl_with_request_kargs():
 )""")
 
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -H 'Accept-Encoding: gzip,deflate,sdch'",
+        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch'",
         timeout=0.1,
-    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurl",
+    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
     timeout=0.1,
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
@@ -255,9 +255,9 @@ def test_parse_curl_with_request_kargs():
 
 def test_parse_curl_with_escaped_newlines():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' \\\n -H 'Accept-Encoding: gzip,deflate' \\\n --insecure"""
+        """curl 'https://pypi.python.org/pypi/uncurlx' \\\n -H 'Accept-Encoding: gzip,deflate' \\\n --insecure"""
     ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurl",
+        """httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={
         "Accept-Encoding": "gzip,deflate"
     },
@@ -271,8 +271,8 @@ def test_parse_curl_with_escaped_newlines():
 
 def test_parse_curl_escaped_unicode_in_cookie():
     uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurl' -H $'cookie: sid=00Dt00000004XYz\\u0021ARg' """
-    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurl",
+        """curl 'https://pypi.python.org/pypi/uncurlx' -H $'cookie: sid=00Dt00000004XYz\\u0021ARg' """
+    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={},
     cookies={
         "sid": "00Dt00000004XYz!ARg"
@@ -284,7 +284,7 @@ def test_parse_curl_escaped_unicode_in_cookie():
 
 def test_parse_curl_with_proxy_and_proxy_auth():
     uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurl' -U user: -x proxy.python.org:8080"
+        "curl 'https://pypi.python.org/pypi/uncurlx' -U user: -x proxy.python.org:8080"
     ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={},
     cookies={},
