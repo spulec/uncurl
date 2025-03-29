@@ -285,7 +285,7 @@ def test_parse_curl_escaped_unicode_in_cookie():
 def test_parse_curl_with_proxy_and_proxy_auth():
     uncurlx.parse(
         "curl 'https://pypi.python.org/pypi/uncurl' -U user: -x proxy.python.org:8080"
-    ).should.equal("""requests.get("https://pypi.python.org/pypi/uncurl",
+    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
     headers={},
     cookies={},
     auth=(),
