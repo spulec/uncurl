@@ -1,8 +1,7 @@
 from unittest.mock import patch
-import six
 from uncurlx.__main__ import main
 
-print_module = "__builtin__.print" if six.PY2 else "uncurlx.bin.print"
+print_module = "uncurlx.bin.print"
 
 
 @patch("uncurl.bin.sys")
