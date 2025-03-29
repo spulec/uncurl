@@ -10,7 +10,7 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 dynamic = ["version", "description"]
 dependencies = [
-    "pyperclip"
+    "pyperclip >=1.9, <2"
 ]
 
 [project.urls]
@@ -18,8 +18,9 @@ Home = "https://github.com/whichoneiwonder/uncurl-x"
 
 [project.optional-dependencies]
 test = [
-    "httpx",
-    "ruff",
+    "httpx>=0.28, <1",
+    "ruff >=0.11, <1",
+    "sure", # Delete this at earliest opportunity
 ]
 
 [project.scripts]
