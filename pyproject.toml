@@ -1,0 +1,26 @@
+[build-system]
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "uncurlx"
+authors = [{name = "whichoneiwonder", email = "whichoneiwonder@github.com"}]
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+dynamic = ["version", "description"]
+dependencies = [
+    "pyperclip"
+]
+
+[project.urls]
+Home = "https://github.com/whichoneiwonder/uncurl-x"
+
+[project.optional-dependencies]
+test = [
+    "httpx",
+    "ruff",
+]
+
+[project.scripts]
+uncurlx = "uncurlx.__main__:main"

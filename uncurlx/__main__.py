@@ -17,3 +17,7 @@ def main():
     else:
         result = parse(sys.stdin.read())
     print("\n" + result)
+
+
+if __name__ == "__main__":
+    main()

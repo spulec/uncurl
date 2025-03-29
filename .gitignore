@@ -3,7 +3,7 @@ dist/*
 .tox
 .coverage
 *.pyc
-*~
+
 .noseids
 build/
 .idea/
