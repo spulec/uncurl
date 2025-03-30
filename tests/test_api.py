@@ -1,24 +1,31 @@
-import sure  # noqa # Hey! Do not delete this import for the tests to pass
+import unittest  # noqa # Hey! Do not delete this import for the tests to pass
 
 import uncurlx
 
 
-def test_basic_get():
-    uncurlx.parse("curl 'https://pypi.python.org/pypi/uncurlx'").should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+OLD_ENDPOINT = "https://pypi.python.org/pypi/uncurlx"
+ENDPOINT = "https://httpbin.org/anything"
+
+
+class TestUncurlx(unittest.TestCase):
+    def test_basic_get(self):
+        output = uncurlx.parse(f"curl '{ENDPOINT}'")
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={},
     cookies={},
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_colon_header():
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'authority:mobile.twitter.com'"
-    ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_colon_header(self):
+        output = uncurlx.parse(f"curl '{ENDPOINT}' -H 'authority:mobile.twitter.com'")
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={
         "authority": "mobile.twitter.com"
     },
@@ -26,14 +33,16 @@ def test_colon_header():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_basic_headers():
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Accept-Language: en-US,en;q=0.8'"
-    ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_basic_headers(self):
+        output = uncurlx.parse(
+            f"curl '{ENDPOINT}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Accept-Language: en-US,en;q=0.8'"
+        )
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={
         "Accept-Encoding": "gzip,deflate,sdch",
         "Accept-Language": "en-US,en;q=0.8"
@@ -42,14 +51,16 @@ def test_basic_headers():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_cookies():
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"
-    ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_cookies(self):
+        output = uncurlx.parse(
+            f"curl '{ENDPOINT}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"
+        )
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
     },
@@ -60,14 +71,16 @@ def test_cookies():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_cookies_lowercase():
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'cookie: foo=bar; baz=baz2'"
-    ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_cookies_lowercase(self):
+        output = uncurlx.parse(
+            f"curl '{ENDPOINT}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'cookie: foo=bar; baz=baz2'"
+        )
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
     },
@@ -78,14 +91,16 @@ def test_cookies_lowercase():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_cookies_dollar_sign():
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch' -H $'Cookie: somereallyreallylongcookie=true'"
-    ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_cookies_dollar_sign(self):
+        output = uncurlx.parse(
+            f"curl '{ENDPOINT}' -H 'Accept-Encoding: gzip,deflate,sdch' -H $'Cookie: somereallyreallylongcookie=true'"
+        )
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
     },
@@ -95,14 +110,17 @@ def test_cookies_dollar_sign():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_post():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' --data '[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
-    ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurlx",
+    def test_post(self):
+        output = uncurlx.parse(
+            f"""curl '{ENDPOINT}'"""
+            """ --data '[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
+        )
+        expected = (
+            """httpx.post("{}",""".format(ENDPOINT)
+            + """
     data='[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]',
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
@@ -114,14 +132,17 @@ def test_post():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_post_with_dict_data():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' --data '{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
-    ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurlx",
+    def test_post_with_dict_data(self):
+        output = uncurlx.parse(
+            f"""curl '{ENDPOINT}'"""
+            """ --data '{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}' -H 'Accept-Encoding: gzip,deflate,sdch' -H 'Cookie: foo=bar; baz=baz2'"""
+        )
+        expected = (
+            """httpx.post("{}",""".format(ENDPOINT)
+            + """
     data='{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}',
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
@@ -133,56 +154,68 @@ def test_post_with_dict_data():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_post_with_string_data():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' --data 'this is just some data'"""
-    ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurlx",
+    def test_post_with_string_data(self):
+        output = uncurlx.parse(
+            f"""curl '{ENDPOINT}' """
+            """--data 'this is just some data'"""
+        )
+        expected = (
+            """httpx.post("{}",""".format(ENDPOINT)
+            + """
     data='this is just some data',
     headers={},
     cookies={},
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_with_binary_data():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' --data-binary 'this is just some data'"""
-    ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurlx",
+    def test_parse_curl_with_binary_data(self):
+        output = uncurlx.parse(
+            f"""curl '{ENDPOINT}'"""
+            """ --data-binary 'this is just some data'"""
+        )
+        expected = (
+            """httpx.post("{}",""".format(ENDPOINT)
+            + """
     data='this is just some data',
     headers={},
     cookies={},
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_with_raw_data():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' --data-raw 'this is just some data'"""
-    ).should.equal(
-        """httpx.post("https://pypi.python.org/pypi/uncurlx",
+    def test_parse_curl_with_raw_data(self):
+        output = uncurlx.parse(
+            f"""curl '{ENDPOINT}'"""
+            """ --data-raw 'this is just some data'"""
+        )
+        expected = (
+            """httpx.post("{}",""".format(ENDPOINT)
+            + """
     data='this is just some data',
     headers={},
     cookies={},
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_with_another_binary_data():
-    uncurlx.parse(
-        """curl -H 'PID: 20000079' -H 'MT: 4' -H 'DivideVersion: 1.0' -H 'SupPhone: Redmi Note 3' -H 'SupFirm: 5.0.2' -H 'IMEI: wx_app' -H 'IMSI: wx_app' -H 'SessionId: ' -H 'CUID: wx_app' -H 'ProtocolVersion: 1.0' -H 'Sign: 7876480679c3cfe9ec0f82da290f0e0e' -H 'Accept: /' -H 'BodyEncryptType: 0' -H 'User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; OPPO R9s Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36 hap/1.0/oppo com.nearme.instant.platform/2.1.0beta1 com.felink.quickapp.reader/1.0.3 ({"packageName":"com.oppo.market","type":"other","extra":{}})' -H 'Content-Type: text/plain; charset=utf-8' -H 'Host: pandahomeios.ifjing.com' --data-binary '{"CateID":"508","PageIndex":1,"PageSize":30}' --compressed 'http://pandahomeios.ifjing.com/action.ashx/otheraction/9028'"""
-    ).should.equals(
-        r"""httpx.post("http://pandahomeios.ifjing.com/action.ashx/otheraction/9028",
+    def test_parse_curl_with_another_binary_data(self):
+        output = uncurlx.parse(
+            r"""curl -H 'PID: 20000079' -H 'MT: 4' -H 'DivideVersion: 1.0' -H 'SupPhone: Redmi Note 3' -H 'SupFirm: 5.0.2' -H 'IMEI: wx_app' -H 'IMSI: wx_app' -H 'SessionId: ' -H 'CUID: wx_app' -H 'ProtocolVersion: 1.0' -H 'Sign: 7876480679c3cfe9ec0f82da290f0e0e' -H 'Accept: /' -H 'BodyEncryptType: 0' -H 'User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; OPPO R9s Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/67.0.3396.87 Mobile Safari/537.36 hap/1.0/oppo com.nearme.instant.platform/2.1.0beta1 com.felink.quickapp.reader/1.0.3 ({"packageName":"com.oppo.market","type":"other","extra":{}})' -H 'Content-Type: text/plain; charset=utf-8' -H 'Host: pandahomeios.ifjing.com' --data-binary '{"CateID":"508","PageIndex":1,"PageSize":30}' --compressed"""
+            f""" '{ENDPOINT}/action.ashx/otheraction/9028'"""
+        )
+        expected = (
+            f"""httpx.post("{ENDPOINT}/action.ashx/otheraction/9028","""
+            r"""
     data='{"CateID":"508","PageIndex":1,"PageSize":30}',
     headers={
         "Accept": "/",
@@ -206,29 +239,32 @@ def test_parse_curl_with_another_binary_data():
     auth=(),
     proxies={},
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_with_insecure_flag():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' --insecure"""
-    ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_parse_curl_with_insecure_flag(self):
+        output = uncurlx.parse(f"""curl '{ENDPOINT}' --insecure""")
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={},
     cookies={},
     auth=(),
     proxies={},
     verify=False
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_with_request_kargs():
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch'",
-        timeout=0.1,
-        allow_redirects=True,
-    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_parse_curl_with_request_kargs(self):
+        output = uncurlx.parse(
+            f"curl '{ENDPOINT}' -H 'Accept-Encoding: gzip,deflate,sdch'",
+            timeout=0.1,
+            allow_redirects=True,
+        )
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     allow_redirects=True,
     timeout=0.1,
     headers={
@@ -237,12 +273,16 @@ def test_parse_curl_with_request_kargs():
     cookies={},
     auth=(),
     proxies={},
-)""")
-
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -H 'Accept-Encoding: gzip,deflate,sdch'",
-        timeout=0.1,
-    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
+)"""
+        )
+        self.assertEqual(output, expected)
+        output = uncurlx.parse(
+            f"curl '{ENDPOINT}' -H 'Accept-Encoding: gzip,deflate,sdch'",
+            timeout=0.1,
+        )
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     timeout=0.1,
     headers={
         "Accept-Encoding": "gzip,deflate,sdch"
@@ -250,14 +290,17 @@ def test_parse_curl_with_request_kargs():
     cookies={},
     auth=(),
     proxies={},
-)""")
+)"""
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_with_escaped_newlines():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' \\\n -H 'Accept-Encoding: gzip,deflate' \\\n --insecure"""
-    ).should.equal(
-        """httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_parse_curl_with_escaped_newlines(self):
+        output = uncurlx.parse(
+            f"""curl '{ENDPOINT}' \\\n -H 'Accept-Encoding: gzip,deflate' \\\n --insecure"""
+        )
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={
         "Accept-Encoding": "gzip,deflate"
     },
@@ -266,45 +309,35 @@ def test_parse_curl_with_escaped_newlines():
     proxies={},
     verify=False
 )"""
-    )
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_escaped_unicode_in_cookie():
-    uncurlx.parse(
-        """curl 'https://pypi.python.org/pypi/uncurlx' -H $'cookie: sid=00Dt00000004XYz\\u0021ARg' """
-    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_parse_curl_escaped_unicode_in_cookie(self):
+        output = uncurlx.parse(
+            f"""curl '{ENDPOINT}' -H $'cookie: sid=00Dt00000004XYz\\u0021ARg' """
+        )
+        expected = (
+            f"""httpx.get("{ENDPOINT}","""
+            """
     headers={},
     cookies={
         "sid": "00Dt00000004XYz!ARg"
     },
     auth=(),
     proxies={},
-)""")
+)"""
+        )
+        self.assertEqual(output, expected)
 
-
-def test_parse_curl_with_proxy_and_proxy_auth():
-    uncurlx.parse(
-        "curl 'https://pypi.python.org/pypi/uncurlx' -U user: -x proxy.python.org:8080"
-    ).should.equal("""httpx.get("https://pypi.python.org/pypi/uncurlx",
+    def test_parse_curl_with_proxy_and_proxy_auth(self):
+        output = uncurlx.parse(f"curl '{ENDPOINT}' -U user: -x proxy.python.org:8080")
+        expected = (
+            """httpx.get("{}",""".format(ENDPOINT)
+            + """
     headers={},
     cookies={},
     auth=(),
     proxies={'http': 'http://user:@proxy.python.org:8080/', 'https': 'http://user:@proxy.python.org:8080/'},
-)""")
-
-
-if __name__ == "__main__":
-    test_basic_get()
-    test_colon_header()
-    test_basic_headers()
-    test_cookies()
-    test_cookies_lowercase()
-    test_post()
-    test_post_with_dict_data()
-    test_post_with_string_data()
-    test_parse_curl_with_binary_data()
-    test_parse_curl_with_raw_data()
-    test_parse_curl_with_another_binary_data()
-    test_parse_curl_with_insecure_flag()
-    test_parse_curl_with_request_kargs()
-    test_parse_curl_with_proxy_and_proxy_auth()
+)"""
+        )
+        self.assertEqual(output, expected)

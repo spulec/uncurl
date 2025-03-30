@@ -20,7 +20,6 @@ Home = "https://github.com/whichoneiwonder/uncurl-x"
 test = [
     "httpx>=0.28, <1",
     "ruff >=0.11",
-    "sure", # Delete this at earliest opportunity
 ]
 
 [project.scripts]
