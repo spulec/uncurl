@@ -9,10 +9,10 @@ from http.cookies import SimpleCookie
 
 parser = argparse.ArgumentParser()
 parser.add_argument("command")
-parser.add_argument("url")
+parser.add_argument("url", default=None)
 parser.add_argument("-d", "--data")
 parser.add_argument("-b", "--data-binary", "--data-raw", default=None)
-parser.add_argument("-X", default="")
+parser.add_argument("-X", "--request", default="")
 parser.add_argument("-H", "--header", action="append", default=[])
 parser.add_argument("--compressed", action="store_true")
 parser.add_argument("-k", "--insecure", action="store_true")
@@ -21,12 +21,31 @@ parser.add_argument("-i", "--include", action="store_true")
 parser.add_argument("-s", "--silent", action="store_true")
 parser.add_argument("-x", "--proxy", default={})
 parser.add_argument("-U", "--proxy-user", default="")
+parser.add_argument("-F", "--form", action="append", default=[])
+parser.add_argument("-e", "--referer", default="")
+parser.add_argument("-r", "--range", default="")
+parser.add_argument("--unix-socket", default="")
+parser.add_argument("--json", default="")
+parser.add_argument("--url", dest="explicit_url", default=None)
+# parser.add_argument("--basic", action="store_true", nargs=0)
+
 
 BASE_INDENT = " " * 4
 
 ParsedContext = namedtuple(
     "ParsedContext",
-    ["method", "url", "data", "headers", "cookies", "verify", "auth", "proxy"],
+    [
+        "method",
+        "url",
+        "data",
+        "headers",
+        "cookies",
+        "verify",
+        "auth",
+        "proxy",
+        "unix_socket",
+        "json",
+    ],
 )
 
 
@@ -34,18 +53,45 @@ def normalize_newlines(multiline_text):
     return multiline_text.replace(" \\\n", " ")
 
 
+def more_than_one_of(*args) -> bool:
+    """
+    Check if more than one of the arguments is set to True.
+    """
+    return sum(bool(arg) for arg in args) > 1
+
+
 def parse_context(curl_command):
     method = "get"
-
-    tokens = shlex.split(normalize_newlines(curl_command))
-    parsed_args = parser.parse_args(tokens)
-
-    post_data = parsed_args.data or parsed_args.data_binary
+    if isinstance(curl_command, str):
+        tokens = shlex.split(normalize_newlines(curl_command))
+        parsed_args = parser.parse_args(tokens)
+    else:
+        parsed_args = parser.parse_args(curl_command)
+    if more_than_one_of(
+        parsed_args.data,
+        parsed_args.data_binary,
+        parsed_args.form,
+        parsed_args.json,
+    ):
+        raise ValueError(
+            "You can only use one kind of -d/--data, -b/--data-binary, or -F/--form options at a time."
+        )
+    data_content_type = None
+    post_data = parsed_args.data or parsed_args.data_binary or parsed_args.form
+    json_data = None
+    if parsed_args.form:
+        data_content_type = "multipart/form-data"
+    elif parsed_args.data_binary:
+        pass
+    elif parsed_args.data:
+        data_content_type = "application/x-www-form-urlencoded"
+    elif parsed_args.json:
+        json_data = repr(json.loads(parsed_args.json))
     if post_data:
         method = "post"
 
-    if parsed_args.X:
-        method = parsed_args.X.lower()
+    if parsed_args.request:
+        method = parsed_args.request.lower()
 
     cookie_dict = OrderedDict()
     quoted_headers = OrderedDict()
@@ -66,7 +112,13 @@ def parse_context(curl_command):
                 cookie_dict[key] = cookie[key].value
         else:
             quoted_headers[header_key] = header_value.strip()
-
+    if data_content_type and "Content-Type" not in quoted_headers:
+        quoted_headers["Content-Type"] = data_content_type
+    if parsed_args.range:
+        range_header_value = parse_curl_range(parsed_args.range)
+        quoted_headers["Range"] = range_header_value
+    if parsed_args.referer:
+        quoted_headers["Referer"] = parsed_args.referer
     # add auth
     user = parsed_args.user
     if parsed_args.user:
@@ -88,23 +140,30 @@ def parse_context(curl_command):
 
     return ParsedContext(
         method=method,
-        url=parsed_args.url,
+        url=parsed_args.url or parsed_args.explicit_url,
         data=post_data,
         headers=quoted_headers,
         cookies=cookie_dict,
         verify=parsed_args.insecure,
         auth=user,
         proxy=proxies,
+        unix_socket=parsed_args.unix_socket,
+        json=json_data if parsed_args.json else None,
     )
 
 
 def parse(curl_command, **kargs):
     parsed_context = parse_context(curl_command)
-
+    client = "httpx"
+    client_setup = ""
+    if parsed_context.unix_socket:
+        client = "client"
+        client_setup = f'{client} = httpx.Client(transport=httpx.HttpTransport(uds="{parsed_context.unix_socket}"))\n'
     data_token = ""
     if parsed_context.data:
         data_token = "{}data='{}',\n".format(BASE_INDENT, parsed_context.data)
-
+    if parsed_context.json:
+        data_token = "{}json={},".format(BASE_INDENT, parsed_context.json)
     verify_token = ""
     if parsed_context.verify:
         verify_token = "\n{}verify=False".format(BASE_INDENT)
@@ -113,19 +172,22 @@ def parse(curl_command, **kargs):
     for k, v in sorted(kargs.items()):
         requests_kargs += "{}{}={},\n".format(BASE_INDENT, k, str(v))
 
+    indent_count = 1
+    indent = indent_count * BASE_INDENT
     # auth_data = f'{BASE_INDENT}auth={parsed_context.auth}'
-    auth_data = "{}auth={}".format(BASE_INDENT, parsed_context.auth)
-    proxy_data = "\n{}proxies={}".format(BASE_INDENT, parsed_context.proxy)
-
+    auth_data = "{}auth={}".format(indent, parsed_context.auth)
+    proxy_data = "\n{}proxies={}".format(indent, parsed_context.proxy)
     formatter = {
+        "client_setup": client_setup,
+        "client": "httpx",
         "method": parsed_context.method,
         "url": parsed_context.url,
         "data_token": data_token,
         "headers_token": "{}headers={}".format(
-            BASE_INDENT, dict_to_pretty_string(parsed_context.headers)
+            indent * indent_count, dict_to_pretty_string(parsed_context.headers)
         ),
         "cookies_token": "{}cookies={}".format(
-            BASE_INDENT, dict_to_pretty_string(parsed_context.cookies)
+            indent * indent_count, dict_to_pretty_string(parsed_context.cookies)
         ),
         "security_token": verify_token,
         "requests_kargs": requests_kargs,
@@ -133,11 +195,25 @@ def parse(curl_command, **kargs):
         "proxies": proxy_data,
     }
 
-    return """httpx.{method}("{url}",
+    return """{client_setup}{client}.{method}("{url}",
 {requests_kargs}{data_token}{headers_token},
 {cookies_token},
 {auth},{proxies},{security_token}
-)""".format(**formatter)
+)""".format(**formatter).strip()
+
+
+def parse_curl_range(range_str: str) -> str:
+    """
+    Parse a range string from curl and convert it to a format suitable for HTTP requests.
+    """
+    # Example: "bytes=0-499", "0-1096", "-100", "99-"
+    if "=" in range_str:
+        unit, ranges = range_str.split("=", maxsplit=1)
+    else:
+        unit = "bytes"
+        ranges = range_str
+    formatted_ranges = ", ".join(r.strip() for r in ranges.split(","))
+    return f"{unit}={formatted_ranges}"
 
 
 def dict_to_pretty_string(the_dict, indent=4):

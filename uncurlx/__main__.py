@@ -1,8 +1,14 @@
-from __future__ import print_function
-
+# -*- coding: utf-8 -*-
 import sys
 
-import pyperclip
+try:
+    from pyperclip import paste as clip_paste
+except ImportError:
+
+    def clip_paste():
+        return list()
+
+
 from .api import parse
 
 
@@ -10,10 +16,10 @@ def main():
     if sys.stdin.isatty():
         if len(sys.argv) > 1:
             # If an argument is passed
-            result = parse(sys.argv[1])
+            result = parse(sys.argv[1:])
         else:
             # Otherwise pull from clipboard
-            result = parse(pyperclip.paste())
+            result = parse(clip_paste())
     else:
         result = parse(sys.stdin.read())
     print("\n" + result)

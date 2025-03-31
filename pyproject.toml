@@ -4,23 +4,19 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "uncurlx"
-authors = [{name = "whichoneiwonder", email = "whichoneiwonder@github.com"}]
+authors = [{ name = "whichoneiwonder", email = "whichoneiwonder@github.com" }]
 readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 dynamic = ["version", "description"]
-dependencies = [
-    "pyperclip >=1.9, <2"
-]
+dependencies = []
 
 [project.urls]
 Home = "https://github.com/whichoneiwonder/uncurl-x"
 
 [project.optional-dependencies]
-test = [
-    "httpx>=0.28, <1",
-    "ruff >=0.11",
-]
+clip = ["pyperclip >=1.9, <2"]            # pyperclip requires xclip or similar on Linux
+test = ["httpx>=0.28, <1", "ruff >=0.11"]
 
 [project.scripts]
 uncurlx = "uncurlx.__main__:main"

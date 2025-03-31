@@ -123,7 +123,8 @@ class TestUncurlx(unittest.TestCase):
             + """
     data='[{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"},"now":1396219192277,"ab":{"welcome_email":{"v":"2","g":2}}}]',
     headers={
-        "Accept-Encoding": "gzip,deflate,sdch"
+        "Accept-Encoding": "gzip,deflate,sdch",
+        "Content-Type": "application/x-www-form-urlencoded"
     },
     cookies={
         "baz": "baz2",
@@ -145,7 +146,8 @@ class TestUncurlx(unittest.TestCase):
             + """
     data='{"evt":"newsletter.show","properties":{"newsletter_type":"userprofile"}}',
     headers={
-        "Accept-Encoding": "gzip,deflate,sdch"
+        "Accept-Encoding": "gzip,deflate,sdch",
+        "Content-Type": "application/x-www-form-urlencoded"
     },
     cookies={
         "baz": "baz2",
@@ -166,7 +168,9 @@ class TestUncurlx(unittest.TestCase):
             """httpx.post("{}",""".format(ENDPOINT)
             + """
     data='this is just some data',
-    headers={},
+    headers={
+        "Content-Type": "application/x-www-form-urlencoded"
+    },
     cookies={},
     auth=(),
     proxies={},
