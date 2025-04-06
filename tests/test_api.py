@@ -16,7 +16,7 @@ class TestUncurlx(unittest.TestCase):
     headers={},
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -31,7 +31,7 @@ class TestUncurlx(unittest.TestCase):
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -49,7 +49,7 @@ class TestUncurlx(unittest.TestCase):
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -69,7 +69,7 @@ class TestUncurlx(unittest.TestCase):
         "foo": "bar"
     },
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -89,7 +89,7 @@ class TestUncurlx(unittest.TestCase):
         "foo": "bar"
     },
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -108,7 +108,7 @@ class TestUncurlx(unittest.TestCase):
         "somereallyreallylongcookie": "true"
     },
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -131,7 +131,7 @@ class TestUncurlx(unittest.TestCase):
         "foo": "bar"
     },
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -154,7 +154,7 @@ class TestUncurlx(unittest.TestCase):
         "foo": "bar"
     },
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -173,7 +173,7 @@ class TestUncurlx(unittest.TestCase):
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -190,7 +190,7 @@ class TestUncurlx(unittest.TestCase):
     headers={},
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -207,7 +207,7 @@ class TestUncurlx(unittest.TestCase):
     headers={},
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -241,7 +241,7 @@ class TestUncurlx(unittest.TestCase):
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -254,7 +254,7 @@ class TestUncurlx(unittest.TestCase):
     headers={},
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
     verify=False
 )"""
         )
@@ -276,7 +276,7 @@ class TestUncurlx(unittest.TestCase):
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -293,7 +293,7 @@ class TestUncurlx(unittest.TestCase):
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -310,7 +310,7 @@ class TestUncurlx(unittest.TestCase):
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
     verify=False
 )"""
         )
@@ -328,7 +328,7 @@ class TestUncurlx(unittest.TestCase):
         "sid": "00Dt00000004XYz!ARg"
     },
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
         self.assertEqual(output, expected)
@@ -341,7 +341,7 @@ class TestUncurlx(unittest.TestCase):
     headers={},
     cookies={},
     auth=(),
-    proxies={'http': 'http://user:@proxy.python.org:8080/', 'https': 'http://user:@proxy.python.org:8080/'},
+    proxy={'http': 'http://user:@proxy.python.org:8080/', 'https': 'http://user:@proxy.python.org:8080/'},
 )"""
         )
         self.assertEqual(output, expected)

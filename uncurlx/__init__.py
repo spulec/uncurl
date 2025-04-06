@@ -11,5 +11,5 @@ This tool is a fork of [`uncurl`](https://github.com/spulec/uncurl) by `spulec` 
 
 from .api import parse, parse_context
 
-__version__ = "0.0.13b0"
+__version__ = "0.0.13b1"
 __all__ = [parse, parse_context]
