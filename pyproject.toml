@@ -9,7 +9,28 @@ readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 dynamic = ["version", "description"]
+keywords = ["curl", "http", "cli", "command-line", "uncurl", "httpx", "uncurlx"]
+requires-python = ">=3.8"
 dependencies = []
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Internet :: WWW/HTTP",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Utilities",
+    "Environment :: Console",
+]
 
 [project.urls]
 Home = "https://github.com/whichoneiwonder/uncurl-x"
@@ -20,3 +41,6 @@ test = ["httpx>=0.28, <1", "ruff >=0.11"]
 
 [project.scripts]
 uncurlx = "uncurlx.__main__:main"
+
+[tool.ruff.lint]
+extend-select = ["I", "C90"]

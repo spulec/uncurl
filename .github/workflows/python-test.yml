@@ -1,6 +1,6 @@
 
 # .github/workflows/python-package.yml
-name: Python Package
+name: python-test
 
 on:
   push:

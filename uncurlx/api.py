@@ -4,8 +4,8 @@ import json
 import re
 import shlex
 from collections import OrderedDict, namedtuple
-
 from http.cookies import SimpleCookie
+from typing import Any, List, Mapping, Optional, Tuple, Union
 
 parser = argparse.ArgumentParser()
 parser.add_argument("command")
@@ -49,18 +49,63 @@ ParsedContext = namedtuple(
 )
 
 
-def normalize_newlines(multiline_text):
+def normalize_newlines(multiline_text: str) -> str:
     return multiline_text.replace(" \\\n", " ")
 
 
-def more_than_one_of(*args) -> bool:
+def more_than_one_of(*args: Any) -> bool:
     """
     Check if more than one of the arguments is set to True.
     """
     return sum(bool(arg) for arg in args) > 1
 
 
-def parse_context(curl_command):
+def parse_headers(
+    headers: List[str],
+    data_content_type: Optional[str],
+    range: Optional[str],
+    referer: Optional[str],
+) -> Tuple[Mapping[str, str], Mapping[str, str]]:
+    """
+    Parse headers from the curl command and return a dictionary of headers and cookies.
+    :param headers: List of headers from the curl command.
+    :return: A tuple containing a dictionary of headers and a dictionary of cookies.
+    """
+    quoted_headers = OrderedDict()
+    cookie_dict = OrderedDict()
+
+    for curl_header in headers:
+        if curl_header.startswith(":"):
+            occurrence = [m.start() for m in re.finditer(":", curl_header)]
+            header_key, header_value = (
+                curl_header[: occurrence[1]],
+                curl_header[occurrence[1] + 1 :],
+            )
+        else:
+            header_key, header_value = curl_header.split(":", 1)
+
+        if header_key.lower().strip("$") == "cookie":
+            cookie = SimpleCookie(bytes(header_value, "ascii").decode("unicode-escape"))
+            for key in cookie:
+                cookie_dict[key] = cookie[key].value
+        else:
+            quoted_headers[header_key] = header_value.strip()
+    if data_content_type and "Content-Type" not in quoted_headers:
+        quoted_headers["Content-Type"] = data_content_type
+    if range:
+        range_header_value = parse_curl_range(range)
+        quoted_headers["Range"] = range_header_value
+    if referer:
+        quoted_headers["Referer"] = referer
+    return quoted_headers, cookie_dict
+
+
+def parse_context(curl_command: Union[str, List[str]]) -> ParsedContext:
+    """
+    Parse a curl command and return a ParsedContext object.
+    :param curl_command: The curl command to parse, either as a string or a list of strings.
+    :return: A ParsedContext object containing the parsed information.
+    """
     method = "get"
     if isinstance(curl_command, str):
         tokens = shlex.split(normalize_newlines(curl_command))
@@ -93,50 +138,20 @@ def parse_context(curl_command):
     if parsed_args.request:
         method = parsed_args.request.lower()
 
-    cookie_dict = OrderedDict()
-    quoted_headers = OrderedDict()
+    quoted_headers, cookie_dict = parse_headers(
+        parsed_args.header,
+        data_content_type,
+        referer=parsed_args.referer,
+        range=parsed_args.range,
+    )
 
-    for curl_header in parsed_args.header:
-        if curl_header.startswith(":"):
-            occurrence = [m.start() for m in re.finditer(":", curl_header)]
-            header_key, header_value = (
-                curl_header[: occurrence[1]],
-                curl_header[occurrence[1] + 1 :],
-            )
-        else:
-            header_key, header_value = curl_header.split(":", 1)
-
-        if header_key.lower().strip("$") == "cookie":
-            cookie = SimpleCookie(bytes(header_value, "ascii").decode("unicode-escape"))
-            for key in cookie:
-                cookie_dict[key] = cookie[key].value
-        else:
-            quoted_headers[header_key] = header_value.strip()
-    if data_content_type and "Content-Type" not in quoted_headers:
-        quoted_headers["Content-Type"] = data_content_type
-    if parsed_args.range:
-        range_header_value = parse_curl_range(parsed_args.range)
-        quoted_headers["Range"] = range_header_value
-    if parsed_args.referer:
-        quoted_headers["Referer"] = parsed_args.referer
     # add auth
     user = parsed_args.user
     if parsed_args.user:
         user = tuple(user.split(":"))
 
     # add proxy and its authentication if it's available.
-    proxies = parsed_args.proxy
-    # proxy_auth = parsed_args.proxy_user
-    if parsed_args.proxy and parsed_args.proxy_user:
-        proxies = {
-            "http": "http://{}@{}/".format(parsed_args.proxy_user, parsed_args.proxy),
-            "https": "http://{}@{}/".format(parsed_args.proxy_user, parsed_args.proxy),
-        }
-    elif parsed_args.proxy:
-        proxies = {
-            "http": "http://{}/".format(parsed_args.proxy),
-            "https": "http://{}/".format(parsed_args.proxy),
-        }
+    proxies = parse_proxy(parsed_args.proxy, parsed_args.proxy_user)
 
     return ParsedContext(
         method=method,
@@ -152,7 +167,24 @@ def parse_context(curl_command):
     )
 
 
-def parse(curl_command, **kargs):
+def parse_proxy(proxy: Optional[str], proxy_user: Optional[str]) -> Mapping[str, str]:
+    # add proxy and its authentication if it's available.
+    proxies = proxy
+    # proxy_auth = proxy_user
+    if proxy and proxy_user:
+        proxies = {
+            "http": "http://{}@{}/".format(proxy_user, proxy),
+            "https": "http://{}@{}/".format(proxy_user, proxy),
+        }
+    elif proxy:
+        proxies = {
+            "http": "http://{}/".format(proxy),
+            "https": "http://{}/".format(proxy),
+        }
+    return proxies
+
+
+def parse(curl_command: Union[str, List[str]], **kargs) -> str:
     parsed_context = parse_context(curl_command)
     client = "httpx"
     client_setup = ""
@@ -216,7 +248,7 @@ def parse_curl_range(range_str: str) -> str:
     return f"{unit}={formatted_ranges}"
 
 
-def dict_to_pretty_string(the_dict, indent=4):
+def dict_to_pretty_string(the_dict: Mapping[str, Any], indent=4) -> str:
     if not the_dict:
         return "{}"
 

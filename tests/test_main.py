@@ -1,7 +1,8 @@
-from unittest.mock import patch
-from uncurlx.__main__ import main
-from unittest import TestCase
 import shlex
+from unittest import TestCase
+from unittest.mock import patch
+
+from uncurlx.__main__ import main
 
 print_module = "uncurlx.__main__.print"
 sys_module = "uncurlx.__main__.sys"

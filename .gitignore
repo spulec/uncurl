@@ -8,3 +8,5 @@ dist/*
 build/
 .idea/
 venv/*
+.python-version
+__pycache__/

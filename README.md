@@ -1,5 +1,14 @@
 # Uncurl-X - Converting curl requests to python httpx requests
 
+![PyPI - Status](https://img.shields.io/pypi/status/uncurlx?style=flat-square&label=PyPI&)
+![Python test Status](https://img.shields.io/github/actions/workflow/status/whichoneiwonder/uncurl-x/python-test.yml?label=Tests&style=flat-square)
+![Dependencies Status](https://img.shields.io/github/actions/workflow/status/whichoneiwonder/uncurl-x/dependency-check.yml?label=deps-check&style=flat-square)
+<!-- ![GitHub branch status](https://img.shields.io/github/checks-status/whichoneiwonder/uncurl-x/master?style=flat-square) -->
+![GitHub License](https://img.shields.io/github/license/whichoneiwonder/uncurl-x?style=flat-square)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/whichoneiwonder/uncurl-x?style=flat-square)
+![Format Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fastral-sh%2Fruff%2Fmain%2Fassets%2Fbadge%2Fv2.json&style=flat-square)
+
+
 <!-- [![Build Status](https://travis-ci.org/spulec/uncurl.png?branch=master)](https://travis-ci.org/spulec/uncurl) -->
 
 # In a nutshell
@@ -8,7 +17,7 @@ Uncurl-X is a library that allows you to convert curl requests into python code 
 
 When you don't pass any arguments to `uncurlx`, it will use whatever is in your clipboard as the curl command.
 
-This is a fork of `uncurl` by `spulec` which converts from curl to `requests`.
+This is a fork of [`uncurl`](https://github.com/spulec/uncurl) by `spulec` which converts from `curl` to `requests`.
 
 ## Example
 
