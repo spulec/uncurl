@@ -126,13 +126,20 @@ def parse_context(curl_command: Union[str, List[str]]) -> ParsedContext:
     json_data = None
     if parsed_args.form:
         data_content_type = "multipart/form-data"
-    elif parsed_args.data_binary:
-        pass
+    # elif parsed_args.data_binary:
+    #     pass
     elif parsed_args.data:
         data_content_type = "application/x-www-form-urlencoded"
     elif parsed_args.json:
-        json_data = repr(json.loads(parsed_args.json))
-    if post_data:
+        try:
+            json_data = repr(json.loads(parsed_args.json))
+        except json.JSONDecodeError as jde:
+            raise ValueError(
+                "Invalid JSON format. Please provide a valid JSON string.",
+                parsed_args.json,
+            ) from jde
+
+    if post_data or json_data:
         method = "post"
 
     if parsed_args.request:
@@ -208,7 +215,7 @@ def parse(curl_command: Union[str, List[str]], **kargs) -> str:
     indent = indent_count * BASE_INDENT
     # auth_data = f'{BASE_INDENT}auth={parsed_context.auth}'
     auth_data = "{}auth={}".format(indent, parsed_context.auth)
-    proxy_data = "\n{}proxies={}".format(indent, parsed_context.proxy)
+    proxy_data = "\n{}proxy={}".format(indent, parsed_context.proxy)
     formatter = {
         "client_setup": client_setup,
         "client": "httpx",

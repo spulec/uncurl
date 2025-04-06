@@ -8,10 +8,10 @@ print_module = "uncurlx.__main__.print"
 sys_module = "uncurlx.__main__.sys"
 
 
-class TestMain(TestCase):
+class TestUncurlxMain(TestCase):
     @patch(sys_module)
     @patch(print_module)
-    def test_main(self, printer, fake_sys):
+    def test_main_method(self, printer, fake_sys):
         fake_sys.argv = [
             "uncurlx",
             *shlex.split(
@@ -29,6 +29,6 @@ httpx.get("https://pypi.python.org/pypi/uncurlx",
     },
     cookies={},
     auth=(),
-    proxies={},
+    proxy={},
 )"""
         )
