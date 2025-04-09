@@ -9,10 +9,15 @@ on:
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
+
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     strategy:
       matrix:
@@ -22,6 +27,7 @@ jobs:
           - '3.13t'
           - '3.13'
           - 3.14-dev
+          # - 3.14t-dev
 
     steps:
     - uses: actions/checkout@v4
@@ -36,6 +42,8 @@ jobs:
       run: python -m unittest discover tests/ && echo tests ok
   
   old-python-test:
+    permissions:
+      contents: read
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
