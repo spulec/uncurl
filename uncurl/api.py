@@ -18,7 +18,8 @@ parser = ModifiedArgumentParser()
 parser.add_argument('command')
 parser.add_argument('url')
 parser.add_argument('-d', '--data')
-parser.add_argument('-b', '--data-binary', '--data-raw', default=None)
+parser.add_argument('-b', '--cookie', default='')
+parser.add_argument('--data-binary', '--data-raw', default=None)
 parser.add_argument('-X', default='')
 parser.add_argument('-H', '--header', action='append', default=[])
 parser.add_argument('--compressed', action='store_true')
@@ -52,6 +53,10 @@ def parse_context(curl_command):
         method = parsed_args.X.lower()
 
     cookie_dict = OrderedDict()
+    for cookie in parsed_args.cookie.split('; '):
+        key, val = cookie.split('=', 1)
+        cookie_dict[key] = val        
+    
     quoted_headers = OrderedDict()
 
     for curl_header in parsed_args.header:
