@@ -2,4 +2,5 @@ coverage==5.5
 mock
 nose
 six
+pyperclip
 sure<1.2.4
