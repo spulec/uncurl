@@ -69,7 +69,7 @@ def parse_context(curl_command):
     # add auth
     user = parsed_args.user
     if parsed_args.user:
-        user = tuple(user.split(':'))
+        user = tuple(user.split(':', 1))
 
     # add proxy and its authentication if it's available.
     proxies = parsed_args.proxy
