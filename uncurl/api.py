@@ -46,9 +46,10 @@ def parse_context(curl_command):
         method = parsed_args.X.lower()
 
     cookie_dict = OrderedDict()
-    for cookie in parsed_args.cookie.split('; '):
-        key, val = cookie.split('=', 1)
-        cookie_dict[key] = val        
+    if parsed_args.cookie:
+        for cookie in parsed_args.cookie.split('; '):
+            key, val = cookie.split('=', 1)
+            cookie_dict[key] = val
     
     quoted_headers = OrderedDict()
 

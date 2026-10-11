@@ -20,4 +20,5 @@ requests.get("https://pypi.python.org/pypi/uncurl",
     },
     cookies={},
     auth=(),
+    proxies={},
 )""")

@@ -14,6 +14,18 @@ def test_basic_get():
     )
 
 
+def test_empty_cookie_option():
+    context = uncurl.parse_context("curl 'https://example.com' --cookie ''")
+    assert context.cookies == {}
+
+
+def test_cookie_option():
+    context = uncurl.parse_context(
+        "curl 'https://example.com' --cookie 'foo=bar; baz=a=b'"
+    )
+    assert context.cookies == {'foo': 'bar', 'baz': 'a=b'}
+
+
 def test_colon_header():
     uncurl.parse("curl 'https://pypi.python.org/pypi/uncurl' -H 'authority:mobile.twitter.com'").should.equal(
         """requests.get("https://pypi.python.org/pypi/uncurl",
